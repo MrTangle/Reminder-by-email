@@ -3,8 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Reminder</title>
+    <style>
+        input[type="text"],
+        textarea {
+            width: 300px;
+            height: 2em;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Crea 3 columnas de igual tamaño */
+            grid-gap: 20px; /* Espacio entre las columnas */
+        }
+
+        .column {
+            height: 200px; /* Ajusta la altura de las columnas según tus necesidades */
+            background-color: #555; /* Color de fondo de las columnas */
+        }
+    </style>
 </head>
-<body>
-    <h2>Hola, Don Víctor, te recuerdo que me debes una comida de huevetes</h2>
+<body style="color:#FFF; background-color: #222222; padding-left: 2%; padding-right: 2%;">
+    <h1 style="text-align: center; font-family: 'Exo', sans-serif; padding: 3%; font-size: 50px">
+        Reminder Fastur App
+    </h1>
+    <h2 style="color: #FFF; font-family: 'Exo', sans-serif; font-size: 30px; font-weight: lighter">
+        Introduce un recordatorio:
+    </h2>
+    <form style="font-size: 25px;" action="/reminder" method="POST">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="description">Descripción:</label><br>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <label for="date">Fecha y Hora:</label>
+        <input type="datetime-local" id="date" name="date" required><br><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+
+    <h2 style="color: #FFF; font-family: 'Exo', sans-serif; font-size: 30px; font-weight: lighter; padding-top: 3%;">
+        Recordatorios activos:
+    </h2>
+    <div id="reminders-container" class="container">
+        {% for reminder in reminders %}
+        <div class="column">
+            <h3>{{ reminder['title'] }}</h3>
+            <p>{{ reminder['description'] }}</p>
+            <p>{{ reminder['date'] }}</p>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

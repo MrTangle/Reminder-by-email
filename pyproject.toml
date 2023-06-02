@@ -10,6 +10,9 @@ packages = [{include = "login_reminder"}]
 python = "^3.9"
 sanic = "^23.3.0"
 requests = "^2.31.0"
+pymongo = "^4.3.3"
+motor = "^3.1.2"
+jinja2 = "^3.1.2"
 
 
 [build-system]

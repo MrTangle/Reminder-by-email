@@ -9,16 +9,16 @@ EMAIL_TO = ['alexibanez86@gmail.com', 'garciavictor1111@gmail.com']
 
 
 async def send_confirmation_email(title, description, date):
-    message = f"Se ha creado un nuevo recordatorio:\n\n" \
-              f"Título: {title}\n" \
-              f"Descripción: {description}\n" \
-              f"Fecha: {date}\n"
+    with open('templates/confirmation_email.html', 'r', encoding='utf-8') as file:
+        template = file.read()
+
+    message = template.format(title=title, description=description, date=date)
 
     email = Mail(
         from_email=EMAIL_FROM,
         to_emails=EMAIL_TO,
         subject='Fastur Reminder App - Nuevo recordatorio',
-        plain_text_content=message
+        html_content=message
     )
 
     try:

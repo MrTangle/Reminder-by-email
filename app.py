@@ -2,6 +2,7 @@ import sanic
 from keys import credentials
 from pymongo import MongoClient
 from jinja2 import Environment, FileSystemLoader
+from email_sender import send_confirmation_email
 
 app = sanic.Sanic("ReminderFasturApp")
 
@@ -50,6 +51,9 @@ async def calendar(request):
             collection.insert_one(reminder)
         except Exception as e:
             print("Error al guardar el documento en MongoDB:", str(e))
+
+        # Envío de correo electrónico de confirmación en segundo plano
+        await app.add_task(send_confirmation_email(title, description, date))
 
         return sanic.response.redirect("/reminder")
 

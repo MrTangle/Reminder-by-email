@@ -1,10 +1,18 @@
 import sanic
+import logging
+from sanic.log import logger
 from keys import credentials
 from pymongo import MongoClient
 from jinja2 import Environment, FileSystemLoader
 from email_sender import send_confirmation_email
 
+
+logging.basicConfig(filename='logs.log', encoding='utf-8', level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
+
 app = sanic.Sanic("ReminderFasturApp")
+
 
 # Establecer conexión con mongodb
 client = MongoClient('mongodb://localhost:27017/')
@@ -29,8 +37,10 @@ async def login(request):
     password = request.form.get("password")
 
     if username in credentials and credentials[username] == password:
+        logger.info("Inicio de sesión exitoso con el usuario: {}".format(username))
         return sanic.response.redirect("/reminder")
     else:
+        logger.warning("Inicio de sesión fallido con el usuario: {}".format(username))
         return sanic.response.html("<h2>Usuario o contraseña incorrectos.</h2>")
 
 
@@ -49,11 +59,11 @@ async def calendar(request):
 
         try:
             collection.insert_one(reminder)
+            logger.info("Nuevo recordatorio agregado: {}".format(title))
         except Exception as e:
-            print("Error al guardar el documento en MongoDB:", str(e))
+            logger.error("Error al guardar el documento en MongoDB: {}".format(str(e)))
 
-        # Envío de correo electrónico de confirmación en segundo plano
-        await app.add_task(send_confirmation_email(title, description, date))
+        await send_confirmation_email(title, description, date)
 
         return sanic.response.redirect("/reminder")
 

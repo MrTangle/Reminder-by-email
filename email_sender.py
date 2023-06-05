@@ -2,10 +2,11 @@ import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from keys import API_SENDGRID
+from sanic.log import logger
 
 SENDGRID_API_KEY = API_SENDGRID
 EMAIL_FROM = 'fasturreminderapp@gmail.com'
-EMAIL_TO = ['alexibanez86@gmail.com', 'garciavictor1111@gmail.com']
+EMAIL_TO = 'alexibanez86@gmail.com'
 
 
 async def send_confirmation_email(title, description, date):
@@ -24,6 +25,6 @@ async def send_confirmation_email(title, description, date):
     try:
         sg = SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY', SENDGRID_API_KEY))
         response = sg.send(email)
-        print('Correo electrónico enviado exitosamente.')
+        logger.info('Correo electrónico enviado exitosamente.')
     except Exception as e:
-        print('Error al enviar el correo electrónico:', str(e))
+        logger.error('Error al enviar el correo electrónico: {}'.format(str(e)))
